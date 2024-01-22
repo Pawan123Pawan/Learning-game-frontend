@@ -37,14 +37,14 @@ function EachQuestionEvaluation({ data, number, check, userAns }) {
             }
           >
             {" "}
-            {userAns}
+            {userAns || "answer not found"}
           </span>
         </p>
         <p className="mb-0 ">
           Right Ans:
           <samp className="text-capitalize text-secondary fw-bold">
             {" "}
-            {data.ans}
+            {data.ans || "answer not found"}
           </samp>
         </p>
       </div>

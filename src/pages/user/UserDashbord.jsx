@@ -16,81 +16,80 @@ const UserDashboard = () => {
   const [loader, setLoader] = useState(true);
   const [userEmail, setUserEmail] = useState("");
 
-  const data = JSON.parse(localStorage.getItem("userData"));
-  // use effect
   useEffect(() => {
-    // Retrieving object from local storage
-
-    setUserEmail(data.user.email);
     fecthAllusers();
-    var langaugeName = localStorage.getItem("langaugeName");
+    // Retrieving object from local storage
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    setUserEmail(userData.user.email);
+
+    const langaugeName = localStorage.getItem("langaugeName");
     if (langaugeName !== null) {
       setName(langaugeName);
-      setUserEmail(data.user.email);
-    } else {
-      console.log("Langauge not found in local storage");
-    }
-
-    if (langaugeName !== null) {
+      setUserEmail(userData.user.email);
       fetchQuestionData(langaugeName);
       compareAns();
+    } else {
+      console.log("Language not found in local storage");
     }
   }, []);
 
   const fetchQuestionData = async (name) => {
     try {
-      const data = await axios.get(
+      const response = await axios.get(
         `${BaseUrl}/api/questions/getall-question/category/${name}`
       );
+      // console.log(response.data.question[0].ans, "category");
 
-      if (data) {
-        setQuestionData(data.data.question);
+      if (response.data) {
+        setQuestionData(response.data.question);
         setLoader(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching question data:", error);
     }
   };
-  // comparing the ans
-  const compareAns = async () => {
+
+  const compareAns = () => {
     try {
-      let userAns = localStorage.getItem("userAns");
-      let getData = JSON.parse(userAns);
-      // Use the array
-      setUserAns(getData);
+      const userAnsData = localStorage.getItem("userAns");
+      const parsedUserAns = JSON.parse(userAnsData);
+      setUserAns(parsedUserAns);
     } catch (error) {
       console.error("Error parsing JSON:", error);
     }
   };
 
-  // all users
   const fecthAllusers = async () => {
     setLoader(true);
     try {
-      const data = await axios.get(`${BaseUrl}/api/users/performance`);
-      setAllUsers(data.data.allusers.sort((a, b) => b.ansNumber - a.ansNumber));
+      const response = await axios.get(`${BaseUrl}/api/users/performance`);
+      setAllUsers(
+        response.data.allusers.sort((a, b) => b.ansNumber - a.ansNumber)
+      );
       setLoader(false);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching all users:", error);
     }
   };
 
-  // Reset user preferences
   const userReset = async () => {
     try {
-      const user = await axios.delete(`${BaseUrl}/api/users/reset-progress`, {
-        data: {
-          email: data.user.email,
-        },
-      });
-      if (!user) {
+      const response = await axios.delete(
+        `${BaseUrl}/api/users/reset-progress`,
+        {
+          data: {
+            email: userEmail,
+          },
+        }
+      );
+      if (!response.data) {
         toast.error("User not Reset");
       } else {
-        toast.success(user.data.message);
+        toast.success(response.data.message);
         navigate(`/quiz/${name}`);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error resetting user progress:", error);
       toast.error(error.message);
     }
   };
@@ -113,14 +112,14 @@ const UserDashboard = () => {
                       key={i}
                       data={data}
                       number={i + 1}
-                      check={data.ans === userAns[i].ans}
-                      userAns={userAns[i].ans}
+                      check={data?.ans === userAns[i]?.ans}
+                      userAns={userAns[i]?.ans}
                     />
                   ))}
                 </div>
               </div>
               <div className="col-md-4">
-                <div className=" card p-3">
+                <div className="card p-3">
                   <div>
                     <h3 className="text-center">User Performance</h3>
                     <div
@@ -133,15 +132,13 @@ const UserDashboard = () => {
                         <div>Score</div>
                       </div>
                       {allUsers?.map((user, i) => (
-                        <>
-                          <UserSocre
-                            key={i}
-                            name={user.name}
-                            rank={i + 1}
-                            score={user.ansNumber}
-                            email={userEmail === user.email}
-                          />
-                        </>
+                        <UserSocre
+                          key={user.email}
+                          name={user.name}
+                          rank={i + 1}
+                          score={user.ansNumber}
+                          email={userEmail === user.email}
+                        />
                       ))}
                       <div className="text-center mt-2">
                         <button onClick={userReset} className="btn btn-primary">

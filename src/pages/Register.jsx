@@ -15,6 +15,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("response");
       const res = await axios.post(`${BaseUrl}/api/users/register`, {
         name,
         email,

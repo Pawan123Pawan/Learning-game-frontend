@@ -23,7 +23,7 @@ function Home() {
             <li>
               <Link
                 className="dropdown-item"
-                onClick={() => setButtonName("english")}
+                onClick={() => setButtonName("English")}
               >
                 English
               </Link>
@@ -31,7 +31,7 @@ function Home() {
             <li>
               <Link
                 className="dropdown-item"
-                onClick={() => setButtonName("hindi")}
+                onClick={() => setButtonName("Hindi")}
               >
                 Hindi
               </Link>
