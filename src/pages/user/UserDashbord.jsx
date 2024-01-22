@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BaseUrl } from "../../services/BaseUrl";
 import EachQuestionEvaluation from "../../component/EachQuestionEvaluation";
-import UserSocre from "./userSocre";
+import UserSocre from "./UserSocre";
 import LoaderSpinner from "../../component/LoaderSpinner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
