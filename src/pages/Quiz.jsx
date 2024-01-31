@@ -47,7 +47,17 @@ function Quiz() {
         `${BaseUrl}/api/questions/check-question/${id}`
       );
 
-      setEachQuestionAns((preData) => [...preData, { ans: ans, id: id }]);
+      // setEachQuestionAns((preData) => [...preData, { ans: ans, id: id }]);
+      setEachQuestionAns((prevData) => {
+        const isDuplicate = prevData.some((item) => item.id === id);
+
+        if (!isDuplicate) {
+          return [...prevData, { ans: ans, id: id }];
+        }
+
+        return prevData;
+      });
+
       if (data.data.ans.toLowerCase() === ans.toLowerCase()) {
         setAns((prevAns) => prevAns + 1);
       }
